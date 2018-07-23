@@ -1,5 +1,6 @@
 const path = require('path')
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const { VueLoaderPlugin } = require('vue-loader')
 
 module.exports = {
     // Javascript 执行入口文件
@@ -19,6 +20,20 @@ module.exports = {
                     // 转换 .css 文件需要使用的 Loader
                     use: ['css-loader']
                 })
+            },
+            {
+                test: /\.js$/,
+                use: ['babel-loader']
+            },
+            {
+                // 增加对 scss 文件的支持
+                test: /\.scss$/,
+                // SCSS 文件的处理顺序为 sass-loader -> css-loader -> style-loader
+                use: ['style-loader', 'css-loader', 'sass-loader'],
+            },
+            {
+                test: /\.vue$/,
+                use: ['vue-loader'],
             }
         ]
     },
@@ -26,6 +41,8 @@ module.exports = {
         new ExtractTextPlugin({
             // 从 .js 文件中提取出来的 .css 文件的名称
             filename: `[name].css`
-        })
-    ]
+        }),
+        new VueLoaderPlugin()
+    ],
+    devtool: 'source-map'
 }
